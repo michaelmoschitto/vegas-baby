@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Vegas Baby NFC Driver</title>
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Helvetica, Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        color: #333;
+        background-color: #f5f5f5;
+      }
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        background-color: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      h1 {
+        color: #e91e63; /* Rose color from theme */
+        text-align: center;
+        margin-top: 0;
+      }
+      .form-group {
+        margin-bottom: 20px;
+      }
+      label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+      }
+      select,
+      button {
+        width: 100%;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+        font-size: 16px;
+      }
+      button {
+        background-color: #e91e63; /* Rose color from theme */
+        color: white;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        margin-bottom: 10px;
+      }
+      button:hover {
+        background-color: #c2185b; /* Darker rose */
+      }
+      button:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+      }
+      .status {
+        margin-top: 20px;
+        padding: 15px;
+        border-radius: 5px;
+        background-color: #f8f9fa;
+        border-left: 4px solid #e91e63;
+      }
+      .log {
+        margin-top: 20px;
+        height: 200px;
+        overflow-y: auto;
+        background-color: #f8f9fa;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+        font-family: monospace;
+        white-space: pre-wrap;
+      }
+      .event {
+        margin-bottom: 5px;
+        padding: 5px;
+        border-radius: 3px;
+      }
+      .event-info {
+        background-color: #e3f2fd;
+        color: #0d47a1;
+      }
+      .event-success {
+        background-color: #e8f5e9;
+        color: #1b5e20;
+      }
+      .event-error {
+        background-color: #ffebee;
+        color: #b71c1c;
+      }
+      .vendor-info {
+        margin-top: 10px;
+        font-size: 14px;
+        color: #666;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Vegas Baby NFC Driver</h1>
+
+      <div class="form-group">
+        <label for="vendor-select">Select Vendor:</label>
+        <select id="vendor-select">
+          <option value="">-- Select a vendor --</option>
+        </select>
+        <div class="vendor-info" id="vendor-info"></div>
+      </div>
+
+      <button id="start-btn">Start NFC Reader</button>
+      <button id="stop-btn" disabled>Stop NFC Reader</button>
+
+      <div class="status" id="status">Status: Ready to connect</div>
+
+      <div class="log" id="log"></div>
+    </div>
+
+    <script>
+      // DOM Elements
+      const vendorSelect = document.getElementById("vendor-select");
+      const vendorInfo = document.getElementById("vendor-info");
+      const startBtn = document.getElementById("start-btn");
+      const stopBtn = document.getElementById("stop-btn");
+      const statusEl = document.getElementById("status");
+      const logEl = document.getElementById("log");
+
+      let isReaderRunning = false;
+
+      // Helper to add log entries
+      function addLogEntry(message, type = "info") {
+        const entry = document.createElement("div");
+        entry.className = `event event-${type}`;
+        entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+        logEl.appendChild(entry);
+        logEl.scrollTop = logEl.scrollHeight;
+      }
+
+      // Robust function to refresh vendors dropdown
+      async function refreshVendorsDropdown() {
+        try {
+          const vendors = await window.api.refreshVendors();
+          // Clear all options except the placeholder
+          while (vendorSelect.options.length > 1) {
+            vendorSelect.remove(1);
+          }
+          if (vendors.length > 0) {
+            vendors.forEach((vendor) => {
+              const option = document.createElement("option");
+              option.value = vendor.id;
+              option.textContent = vendor.name.trim();
+              vendorSelect.appendChild(option);
+            });
+            addLogEntry(
+              `Vendors refreshed: ${vendors.length} vendors available`
+            );
+          } else {
+            addLogEntry(
+              "No vendors found. Please check your connection.",
+              "error"
+            );
+          }
+          // Reset selection
+          vendorSelect.value = "";
+          updateVendorInfo();
+          startBtn.disabled = true;
+        } catch (error) {
+          addLogEntry(`Error refreshing vendors: ${error}`, "error");
+        }
+      }
+
+      // Load vendors when page loads
+      window.onload = async () => {
+        try {
+          await refreshVendorsDropdown();
+          // Check if a vendor was previously selected
+          const selectedVendorId = await window.api.getSelectedVendor();
+          if (selectedVendorId) {
+            vendorSelect.value = selectedVendorId;
+            updateVendorInfo();
+            startBtn.disabled = false;
+          }
+        } catch (error) {
+          addLogEntry(`Error loading vendors: ${error}`, "error");
+        }
+      };
+
+      // Update vendor info when a selection is made
+      function updateVendorInfo() {
+        const selectedOption = vendorSelect.options[vendorSelect.selectedIndex];
+        if (selectedOption.value) {
+          vendorInfo.textContent = `Selected: ${selectedOption.textContent} (${selectedOption.value})`;
+        } else {
+          vendorInfo.textContent = "";
+        }
+      }
+
+      // Event listeners
+      vendorSelect.addEventListener("change", async () => {
+        const vendorId = vendorSelect.value;
+        if (vendorId) {
+          await window.api.saveSelectedVendor(vendorId);
+          updateVendorInfo();
+          addLogEntry(
+            `Selected vendor: ${
+              vendorSelect.options[vendorSelect.selectedIndex].textContent
+            }`
+          );
+          startBtn.disabled = false;
+        } else {
+          startBtn.disabled = true;
+        }
+      });
+
+      vendorSelect.addEventListener("click", refreshVendorsDropdown);
+
+      startBtn.addEventListener("click", async () => {
+        if (!vendorSelect.value) {
+          addLogEntry("Please select a vendor first", "error");
+          return;
+        }
+
+        try {
+          await window.api.startNfcReader();
+          isReaderRunning = true;
+          startBtn.disabled = true;
+          stopBtn.disabled = false;
+          statusEl.textContent = "Status: Waiting for NFC reader...";
+          addLogEntry("NFC reader started");
+        } catch (error) {
+          addLogEntry(`Error starting NFC reader: ${error}`, "error");
+        }
+      });
+
+      stopBtn.addEventListener("click", async () => {
+        try {
+          await window.api.stopNfcReader();
+          isReaderRunning = false;
+          startBtn.disabled = false;
+          stopBtn.disabled = true;
+          statusEl.textContent = "Status: Ready to connect";
+          addLogEntry("NFC reader stopped");
+        } catch (error) {
+          addLogEntry(`Error stopping NFC reader: ${error}`, "error");
+        }
+      });
+
+      // Register API event listeners
+      window.api.onVendorsUpdated((vendors) => {
+        // Clear existing options
+        while (vendorSelect.options.length > 1) {
+          vendorSelect.remove(1);
+        }
+
+        // Add new options
+        console.log(vendors); // Debug: log the vendors array
+        vendors.forEach((vendor) => {
+          const option = document.createElement("option");
+          option.value = vendor.id;
+          option.textContent = vendor.name.trim();
+          vendorSelect.appendChild(option);
+        });
+
+        addLogEntry(`Vendors updated: ${vendors.length} vendors available`);
+      });
+
+      window.api.onReaderStatus((data) => {
+        if (data.status === "connected") {
+          statusEl.textContent = `Status: Connected to reader - ${data.name}`;
+          addLogEntry(`Reader connected: ${data.name}`, "success");
+        } else {
+          statusEl.textContent = `Status: Reader disconnected - ${data.name}`;
+          addLogEntry(`Reader disconnected: ${data.name}`, "info");
+        }
+      });
+
+      window.api.onCardDetected((data) => {
+        const uid = data.uid.toLowerCase();
+        statusEl.textContent = `Status: Card detected! UID: ${uid}`;
+        addLogEntry(
+          `Card detected! UID: ${uid} (Reader: ${data.reader})`,
+          "success"
+        );
+      });
+
+      window.api.onWebhookResponse((data) => {
+        if (data.success) {
+          addLogEntry(
+            `Webhook response: SUCCESS - ${JSON.stringify(data.data)}`,
+            "success"
+          );
+        } else {
+          addLogEntry(`Webhook response: ERROR - ${data.error}`, "error");
+        }
+      });
+
+      window.api.onNfcError((error) => {
+        statusEl.textContent = `Status: NFC Error - ${error}`;
+        addLogEntry(`NFC Error: ${error}`, "error");
+      });
+
+      window.api.onReaderError((data) => {
+        addLogEntry(`Reader Error (${data.reader}): ${data.error}`, "error");
+      });
+
+      // Clean up listeners when window is closed
+      window.addEventListener("beforeunload", () => {
+        window.api.removeAllListeners("vendors-updated");
+        window.api.removeAllListeners("reader-status");
+        window.api.removeAllListeners("card-detected");
+        window.api.removeAllListeners("webhook-response");
+        window.api.removeAllListeners("nfc-error");
+        window.api.removeAllListeners("reader-error");
+      });
+    </script>
+  </body>
+</html>

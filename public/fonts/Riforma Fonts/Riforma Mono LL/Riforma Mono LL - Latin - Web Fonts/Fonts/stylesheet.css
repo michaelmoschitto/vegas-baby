@@ -1,0 +1,150 @@
+/*
+ *
+ * INSTRUCTIONS
+ *
+ * Copy the Legal Disclaimer and the @font-faces statements to your regular CSS file.
+ * The font file(s) should be placed relative to the regular CSS file.
+ *
+ */
+
+/*
+ * Legal Disclaimer for Web licence
+ *
+ * Licence to use self-hosted webfonts for displaying dynamic text on specified website domains. Our package includes WOFF and WOFF2 font formats.
+ *
+ * Should the license page views limit be exceeded the license holder will be required to contact Lineto.com for an upgrade.
+ * 
+ * It is strictly prohibited to rename the font and to download or use these fonts in any other media. 
+ * 
+ * These Web fonts are licensed exclusively for the use on the following domain(s) and their subdomains:
+ *
+ * mezo.xyz (monthly pageviews: < 250K)
+ *
+ */
+
+/* complete */
+
+@font-face {
+  font-family: "RiformaMonoLLWeb-Light";
+  src: url("RiformaMonoLLWeb-Light.woff") format("woff");
+}
+
+@font-face {
+  font-family: "RiformaMonoLLWeb-Light";
+  src: url("RiformaMonoLLWeb-Light.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "RiformaMonoLLWeb-LightItalic";
+  src: url("RiformaMonoLLWeb-LightItalic.woff") format("woff");
+}
+
+@font-face {
+  font-family: "RiformaMonoLLWeb-LightItalic";
+  src: url("RiformaMonoLLWeb-LightItalic.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "RiformaMonoLLWeb-Regular";
+  src: url("RiformaMonoLLWeb-Regular.woff") format("woff");
+}
+
+@font-face {
+  font-family: "RiformaMonoLLWeb-Regular";
+  src: url("RiformaMonoLLWeb-Regular.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "RiformaMonoLLWeb-Italic";
+  src: url("RiformaMonoLLWeb-Italic.woff") format("woff");
+}
+
+@font-face {
+  font-family: "RiformaMonoLLWeb-Italic";
+  src: url("RiformaMonoLLWeb-Italic.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "RiformaMonoLLWeb-Bold";
+  src: url("RiformaMonoLLWeb-Bold.woff") format("woff");
+}
+
+@font-face {
+  font-family: "RiformaMonoLLWeb-Bold";
+  src: url("RiformaMonoLLWeb-Bold.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "RiformaMonoLLWeb-BoldItalic";
+  src: url("RiformaMonoLLWeb-BoldItalic.woff") format("woff");
+}
+
+@font-face {
+  font-family: "RiformaMonoLLWeb-BoldItalic";
+  src: url("RiformaMonoLLWeb-BoldItalic.woff2") format("woff2");
+}
+
+
+/* subset */
+
+@font-face {
+  font-family: "RiformaMonoLLSub-Light";
+  src: url("RiformaMonoLLSub-Light.woff") format("woff");
+}
+
+@font-face {
+  font-family: "RiformaMonoLLSub-Light";
+  src: url("RiformaMonoLLSub-Light.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "RiformaMonoLLSub-LightItalic";
+  src: url("RiformaMonoLLSub-LightItalic.woff") format("woff");
+}
+
+@font-face {
+  font-family: "RiformaMonoLLSub-LightItalic";
+  src: url("RiformaMonoLLSub-LightItalic.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "RiformaMonoLLSub-Regular";
+  src: url("RiformaMonoLLSub-Regular.woff") format("woff");
+}
+
+@font-face {
+  font-family: "RiformaMonoLLSub-Regular";
+  src: url("RiformaMonoLLSub-Regular.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "RiformaMonoLLSub-Italic";
+  src: url("RiformaMonoLLSub-Italic.woff") format("woff");
+}
+
+@font-face {
+  font-family: "RiformaMonoLLSub-Italic";
+  src: url("RiformaMonoLLSub-Italic.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "RiformaMonoLLSub-Bold";
+  src: url("RiformaMonoLLSub-Bold.woff") format("woff");
+}
+
+@font-face {
+  font-family: "RiformaMonoLLSub-Bold";
+  src: url("RiformaMonoLLSub-Bold.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "RiformaMonoLLSub-BoldItalic";
+  src: url("RiformaMonoLLSub-BoldItalic.woff") format("woff");
+}
+
+@font-face {
+  font-family: "RiformaMonoLLSub-BoldItalic";
+  src: url("RiformaMonoLLSub-BoldItalic.woff2") format("woff2");
+}
+
+

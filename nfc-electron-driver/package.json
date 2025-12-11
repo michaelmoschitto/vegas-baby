@@ -1,0 +1,64 @@
+{
+  "name": "nfc-electron-driver",
+  "version": "1.0.0",
+  "main": "main.js",
+  "engines": {
+    "node": "18.18.0"
+  },
+  "scripts": {
+    "start": "electron-forge start",
+    "dev": "electron .",
+    "rebuild": "electron-rebuild -f -w nfc-pcsc",
+    "package": "electron-forge package",
+    "make": "electron-forge make",
+    "publish": "electron-forge publish"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "NFC Card Reader Driver for Vegas Baby",
+  "dependencies": {
+    "axios": "^1.6.7",
+    "electron-squirrel-startup": "^1.0.1",
+    "electron-store": "^10.0.1",
+    "nfc-pcsc": "0.8.1"
+  },
+  "devDependencies": {
+    "@electron-forge/cli": "^7.8.1",
+    "@electron-forge/maker-deb": "^7.8.1",
+    "@electron-forge/maker-rpm": "^7.8.1",
+    "@electron-forge/maker-squirrel": "^7.8.1",
+    "@electron-forge/maker-zip": "^7.8.1",
+    "electron": "^29.1.0",
+    "electron-rebuild": "^3.2.9"
+  },
+  "config": {
+    "forge": {
+      "packagerConfig": {
+        "asar": true
+      },
+      "makers": [
+        {
+          "name": "@electron-forge/maker-squirrel",
+          "config": {
+            "name": "Vegas_Baby_NFC_Driver"
+          }
+        },
+        {
+          "name": "@electron-forge/maker-zip",
+          "platforms": [
+            "darwin"
+          ]
+        },
+        {
+          "name": "@electron-forge/maker-deb",
+          "config": {}
+        },
+        {
+          "name": "@electron-forge/maker-rpm",
+          "config": {}
+        }
+      ]
+    }
+  }
+}

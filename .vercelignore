@@ -1,0 +1,28 @@
+# Dependencies
+node_modules
+.npm
+.yarn
+
+# Build output
+.next
+out
+
+# Electron Driver (very large)
+nfc-electron-driver
+_nfc-electron-driver
+
+# Development
+.git
+.github
+.vscode
+.env.local
+.env.*.local
+
+# Testing
+coverage
+
+# Misc
+*.log
+.DS_Store 
+
+public/Mezo Logo and Marks/
